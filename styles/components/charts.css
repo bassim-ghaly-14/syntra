@@ -1,0 +1,9 @@
+.chart-card,
+.widget {
+    min-height: 340px;
+}
+
+.widget canvas {
+    width: 100% !important;
+    height: 300px !important;
+}

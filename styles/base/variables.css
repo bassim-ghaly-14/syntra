@@ -1,0 +1,16 @@
+:root {
+    --bg: #060816;
+    --card: #101528;
+    --primary: #00f0ff;
+    --secondary: #6c63ff;
+    --text: #f5f7ff;
+    --muted: #95a2c6;
+}
+body {
+    background:
+        radial-gradient(circle at top left, #18213d, #060816);
+
+    color: var(--text);
+
+    font-family: Inter, sans-serif;
+}

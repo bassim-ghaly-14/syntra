@@ -1,0 +1,85 @@
+/* ========================================
+   SYNTRA ANIMATION SYSTEM
+======================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 rgba(0, 240, 255, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 24px rgba(0, 240, 255, 0.45);
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgba(0, 240, 255, 0);
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes rotateSlow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease forwards;
+}
+
+.scale-in {
+    animation: scaleIn 0.45s ease forwards;
+}
+
+.glow-pulse {
+    animation: pulseGlow 2s infinite;
+}
+
+.float-up {
+    animation: floatUp 4s ease-in-out infinite;
+}
+
+.rotate-slow {
+    animation: rotateSlow 12s linear infinite;
+}

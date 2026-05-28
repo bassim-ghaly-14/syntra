@@ -1,0 +1,9 @@
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg);
+}
+.dashboard-container {
+    flex: 1;
+    padding: 32px;
+}

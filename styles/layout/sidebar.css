@@ -1,0 +1,22 @@
+.sidebar {
+    width: 280px;
+    background: #0d1222;
+}
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px;
+}
+
+.sidebar-logo img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.sidebar-logo h2 {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+}
