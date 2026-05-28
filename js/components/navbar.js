@@ -76,7 +76,7 @@ function createNavbarMarkup() {
                     type="button"
                 >
                     <img
-                        src=""
+                        src="./assets/images/avatars/avatar-1.png"
                         alt="Profile Avatar"
                     >
 

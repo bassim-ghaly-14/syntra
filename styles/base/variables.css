@@ -14,3 +14,19 @@ body {
 
     font-family: Inter, sans-serif;
 }
+body {
+    background: url("../assets/images/backgrounds/dashboard-bg.svg"),
+                radial-gradient(circle at top left, #18213d, #060816);
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: var(--text);
+    font-family: Inter, sans-serif;
+}
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("../assets/images/textures/noise.png");
+    opacity: 0.05;
+    pointer-events: none;
+}

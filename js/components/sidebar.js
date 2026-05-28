@@ -2,33 +2,53 @@ const navigationItems = [
     {
         id: "dashboard",
         label: "Dashboard",
-        icon: ""
+        icon: "./assets/icons/layout-dashboard.svg"
     },
     {
         id: "analytics",
         label: "Analytics",
-        icon: ""
+        icon: "./assets/icons/chart-column.svg"
     },
     {
         id: "reports",
         label: "Reports",
-        icon: ""
+        icon: "./assets/icons/file-text.svg"
     },
     {
         id: "activity",
         label: "Activity",
-        icon: ""
+        icon: "./assets/icons/activity.svg"
     },
     {
         id: "users",
         label: "Users",
-        icon: ""
+        icon: "./assets/icons/users.svg"
     },
     {
         id: "settings",
         label: "Settings",
-        icon: ""
-    }
+        icon: "./assets/icons/settings.svg"
+    },
+    {
+        id: "bell",
+        label: "Bell",
+        icon: "./assets/icons/bell.svg"
+    },
+    {
+        id: "search",
+        label: "Search",
+        icon: "./assets/icons/search.svg"
+    },
+    {
+        id: "moon",
+        label: "Moon",
+        icon: "./assets/icons/moon.svg"
+    },
+    {
+        id: "sun",
+        label: "Sun",
+        icon: "./assets/icons/sun.svg"
+    },
 ];
 
 function createNavigationItem(item) {
@@ -135,7 +155,7 @@ export function renderSidebar() {
                     class="sidebar-user-avatar"
                 >
                     <img
-                        src=""
+                        src="./assets/images/avatars/avatar-1.png"
                         alt="User Avatar"
                     >
                 </div>
