@@ -1,3 +1,35 @@
 .widget {
     position: relative;
+    overflow: hidden;
+}
+
+.metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metric-title {
+    font-size: 13px;
+    color: #95a2c6;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #f5f7ff;
+}
+
+.chart-header {
+    font-size: 14px;
+    color: #95a2c6;
+    margin-bottom: 10px;
+}
+.widget-dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+}
+.widget {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

@@ -1,9 +1,68 @@
+import {
+    pushNotification
+} from "./notificationService.js";
+
+let realtimeInterval = null;
+
+function generateMetricValue(
+    min,
+    max
+) {
+    return Math.floor(
+        Math.random() *
+            (max - min + 1) +
+            min
+    );
+}
+
+function updateMetricCards() {
+    const metrics =
+        document.querySelectorAll(
+            "[data-metric]"
+        );
+
+    metrics.forEach(metric => {
+        const min =
+            Number(
+                metric.dataset.min
+            ) || 100;
+
+        const max =
+            Number(
+                metric.dataset.max
+            ) || 1000;
+
+        const value =
+            generateMetricValue(
+                min,
+                max
+            );
+
+        metric.textContent =
+            value.toLocaleString();
+    });
+}
+
 export function startRealtimeEngine() {
+    stopRealtimeEngine();
 
-    setInterval(() => {
+    realtimeInterval =
+        setInterval(() => {
+            updateMetricCards();
+        }, 3000);
 
-        console.log("live metric update");
+    pushNotification(
+        "Realtime engine started",
+        "success"
+    );
+}
 
-    }, 2000);
+export function stopRealtimeEngine() {
+    if (realtimeInterval) {
+        clearInterval(
+            realtimeInterval
+        );
 
+        realtimeInterval = null;
+    }
 }

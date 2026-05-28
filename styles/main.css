@@ -15,3 +15,56 @@
 @import url("./components/modals.css");
 @import url("./components/forms.css");
 @import url("./components/loaders.css");
+
+/* ===== SYNTRA GLOBAL UX POLISH ===== */
+
+body {
+    overflow-x: hidden;
+    background: radial-gradient(circle at top left, #18213d, #060816);
+}
+
+/* smooth transitions globally */
+* {
+    transition: all 0.2s ease;
+}
+
+/* selection */
+::selection {
+    background: #00f0ff33;
+}
+#syntra-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 99999;
+}
+
+.syntra-toast {
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(16, 21, 40, 0.95);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+.syntra-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.syntra-toast-success {
+    border-left: 3px solid #00f0ff;
+}
+
+.syntra-toast-error {
+    border-left: 3px solid #ff4d4d;
+}
+
+.syntra-toast-warning {
+    border-left: 3px solid #ffcc00;
+}

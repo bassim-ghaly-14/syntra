@@ -1,5 +1,87 @@
-export function calculateGrowth(current, previous) {
+export function calculateGrowth(
+    current,
+    previous
+) {
+    const currentValue =
+        Number(current);
 
-    return ((current - previous) / previous) * 100;
+    const previousValue =
+        Number(previous);
 
+    if (
+        Number.isNaN(currentValue) ||
+        Number.isNaN(previousValue)
+    ) {
+        return 0;
+    }
+
+    if (previousValue === 0) {
+        if (currentValue === 0) {
+            return 0;
+        }
+
+        return 100;
+    }
+
+    return (
+        (
+            (currentValue -
+                previousValue) /
+            previousValue
+        ) * 100
+    );
+}
+
+export function calculateAverage(
+    values = []
+) {
+    if (
+        !Array.isArray(values) ||
+        values.length === 0
+    ) {
+        return 0;
+    }
+
+    const total = values.reduce(
+        (sum, value) =>
+            sum + Number(value || 0),
+        0
+    );
+
+    return total / values.length;
+}
+
+export function calculateTotal(
+    values = []
+) {
+    if (!Array.isArray(values)) {
+        return 0;
+    }
+
+    return values.reduce(
+        (sum, value) =>
+            sum + Number(value || 0),
+        0
+    );
+}
+
+export function calculateTrend(
+    current,
+    previous
+) {
+    const growth =
+        calculateGrowth(
+            current,
+            previous
+        );
+
+    if (growth > 0) {
+        return "up";
+    }
+
+    if (growth < 0) {
+        return "down";
+    }
+
+    return "flat";
 }
