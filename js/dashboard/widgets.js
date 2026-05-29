@@ -1,134 +1,251 @@
-import { formatCurrency } from "../utils/formatter.js";
-import { generateId } from "../utils/helpers.js";
+import {
+    formatCurrency,
+    formatNumber,
+    formatPercentage
+} from "../utils/formatter.js";
+
+import {
+    generateId
+} from "../utils/helpers.js";
+
+import {
+    dashboardMetrics,
+    topPages
+} from "../data/metrics.js";
+
+import {
+    createAreaChart
+} from "../charts/areaChart.js";
+
+import {
+    createLineChart
+} from "../charts/lineChart.js";
+
+import {
+    createBarChart
+} from "../charts/barChart.js";
+
+import {
+    createDonutChart
+} from "../charts/donutChart.js";
+
+import {
+    createRadarChart
+} from "../charts/radarChart.js";
+
+import {
+    createHeatmapChart
+} from "../charts/heatmapChart.js";
 
 function createMetricCard({
-    id,
     title,
     value,
-    prefix = "",
-    suffix = "",
-    min = 100,
-    max = 1000
+    growth,
+    icon,
+    min,
+    max,
+    color = "cyan"
 }) {
+
     return `
         <div
-            class="card widget metric-card"
-            data-widget-id="${id}"
+            class="card widget metric-widget metric-${color}"
+            data-widget-id="${generateId()}"
             data-metric="true"
             data-min="${min}"
             data-max="${max}"
         >
+
+            <div class="metric-top">
+
+                <div class="metric-icon">
+                    <img
+                        src="${icon}"
+                        alt="${title}"
+                    >
+                </div>
+
+                <div class="metric-growth positive">
+                    +${growth}%
+                </div>
+
+            </div>
+
             <div class="metric-title">
                 ${title}
             </div>
 
-            <div class="metric-value">
-                ${prefix}${value}${suffix}
+            <div
+                class="metric-value"
+                data-counter="${value}"
+            >
+                ${value}
             </div>
+
         </div>
     `;
 }
 
-function createChartCard({
-    id,
+function createChartWidget({
+    title,
     canvasId,
-    title
+    action = "analytics"
 }) {
+
     return `
         <div
-            class="card widget chart-card"
-            data-widget-id="${id}"
+            class="card widget chart-widget"
+            data-widget-id="${generateId()}"
         >
-            <div class="chart-header">
-                ${title}
+
+            <div class="widget-header">
+
+                <div>
+
+                    <h3>
+                        ${title}
+                    </h3>
+
+                </div>
+
+                <button
+                    class="widget-action"
+                    data-widget-action="${action}"
+                >
+                    View
+                </button>
+
             </div>
 
-            <canvas id="${canvasId}"></canvas>
+            <div class="widget-body">
+
+                <canvas
+                    id="${canvasId}"
+                ></canvas>
+
+            </div>
+
+        </div>
+    `;
+}
+
+function createHeatmapWidget() {
+
+    return `
+        <div
+            class="card widget heatmap-widget"
+            data-widget-id="${generateId()}"
+        >
+
+            <div class="widget-header">
+
+                <h3>
+                    Global Activity Map
+                </h3>
+
+                <button
+                    class="widget-action"
+                    data-widget-action="analytics"
+                >
+                    View
+                </button>
+
+            </div>
+
+            <div
+                id="heatmapContainer"
+                class="heatmap-container"
+            ></div>
+
+        </div>
+    `;
+}
+
+function createTopPagesWidget() {
+
+    return `
+        <div
+            class="card widget pages-widget"
+            data-widget-id="${generateId()}"
+        >
+
+            <div class="widget-header">
+
+                <h3>
+                    Top Pages
+                </h3>
+
+            </div>
+
+            <div class="top-pages-list">
+
+                ${topPages.map(page => `
+                    <div class="top-page-row">
+
+                        <div
+                            class="top-page-name"
+                        >
+                            ${page.page}
+                        </div>
+
+                        <div
+                            class="top-page-views"
+                        >
+                            ${formatNumber(
+                                page.views
+                            )}
+                        </div>
+
+                    </div>
+                `).join("")}
+
+            </div>
+
         </div>
     `;
 }
 
 function initializeCharts() {
-    const revenueCanvas =
+
+    createAreaChart(
         document.getElementById(
-            "revenueChart"
-        );
+            "revenueAreaChart"
+        )
+    );
 
-    const trafficCanvas =
+    createLineChart(
         document.getElementById(
-            "trafficChart"
-        );
+            "usersLineChart"
+        )
+    );
 
-    if (typeof Chart === "undefined") {
-        return;
-    }
+    createDonutChart(
+        document.getElementById(
+            "trafficDonutChart"
+        )
+    );
 
-    if (revenueCanvas) {
-        new Chart(revenueCanvas, {
-            type: "line",
-            data: {
-                labels: [
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu",
-                    "Fri"
-                ],
-                datasets: [
-                    {
-                        label: "Revenue",
-                        data: [
-                            1200,
-                            1900,
-                            3000,
-                            2500,
-                            4000
-                        ],
-                        borderColor: "#00f0ff",
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
+    createBarChart(
+        document.getElementById(
+            "pagesBarChart"
+        )
+    );
 
-    if (trafficCanvas) {
-        new Chart(trafficCanvas, {
-            type: "doughnut",
-            data: {
-                labels: [
-                    "Organic",
-                    "Ads",
-                    "Referral"
-                ],
-                datasets: [
-                    {
-                        data: [
-                            55,
-                            25,
-                            20
-                        ],
-                        backgroundColor: [
-                            "#00f0ff",
-                            "#6c63ff",
-                            "#95a2c6"
-                        ]
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
+    createRadarChart(
+        document.getElementById(
+            "performanceRadarChart"
+        )
+    );
+
+    createHeatmapChart(
+        document.getElementById(
+            "heatmapContainer"
+        )
+    );
 }
 
-function applyCountUp() {
+function initializeCountUp() {
+
     if (
         typeof countUp ===
         "undefined"
@@ -136,31 +253,66 @@ function applyCountUp() {
         return;
     }
 
-    const elements =
-        document.querySelectorAll(
-            ".metric-value"
-        );
+    document
+        .querySelectorAll(
+            "[data-counter]"
+        )
+        .forEach(element => {
 
-    elements.forEach(el => {
-        const value =
-            parseInt(
-                el.textContent
-                    .replace(
-                        /[^0-9]/g,
-                        ""
-                    )
-            ) || 0;
+            const raw =
+                Number(
+                    element.dataset.counter
+                        .toString()
+                        .replace(
+                            /[^0-9.]/g,
+                            ""
+                        )
+                );
 
-        el.innerHTML = "";
+            if (
+                Number.isNaN(raw)
+            ) {
+                return;
+            }
 
-        new countUp.CountUp(
-            el,
-            value
-        ).start();
-    });
+            element.innerHTML = "";
+
+            const counter =
+                new countUp.CountUp(
+                    element,
+                    raw,
+                    {
+                        duration: 2
+                    }
+                );
+
+            counter.start();
+        });
+}
+
+function initializeWidgetAnimations() {
+
+    if (
+        typeof gsap ===
+        "undefined"
+    ) {
+        return;
+    }
+
+    gsap.from(
+        ".widget",
+        {
+            opacity: 0,
+            y: 20,
+            stagger: 0.05,
+            duration: 0.5,
+            ease: "power2.out"
+        }
+    );
 }
 
 export function createWidgets() {
+
     const grid =
         document.getElementById(
             "dashboard-grid"
@@ -170,47 +322,91 @@ export function createWidgets() {
         return;
     }
 
-    const revenueWidgetId =
-        generateId();
-
-    const trafficWidgetId =
-        generateId();
-
     grid.innerHTML = `
+
         ${createMetricCard({
-            id: generateId(),
             title: "Revenue",
-            value: formatCurrency(
-                24000
-            ),
-            prefix: "",
-            min: 20000,
-            max: 50000
+            value: dashboardMetrics.revenue.current,
+            growth: dashboardMetrics.revenue.growth,
+            icon: "./assets/icons/dollar-sign.svg",
+            min: 70000,
+            max: 100000,
+            color: "cyan"
         })}
 
         ${createMetricCard({
-            id: generateId(),
-            title: "Users",
-            value: "12,400",
-            min: 10000,
-            max: 20000
+            title: "Active Users",
+            value: dashboardMetrics.activeUsers.current,
+            growth: dashboardMetrics.activeUsers.growth,
+            icon: "./assets/icons/users.svg",
+            min: 15000,
+            max: 25000,
+            color: "purple"
         })}
 
-        ${createChartCard({
-            id: revenueWidgetId,
-            canvasId: "revenueChart",
-            title: "Revenue Overview"
+        ${createMetricCard({
+            title: "Sessions",
+            value: dashboardMetrics.sessions.current,
+            growth: dashboardMetrics.sessions.growth,
+            icon: "./assets/icons/activity.svg",
+            min: 100000,
+            max: 160000,
+            color: "green"
         })}
 
-        ${createChartCard({
-            id: trafficWidgetId,
-            canvasId: "trafficChart",
-            title: "Traffic Sources"
+        ${createMetricCard({
+            title: "Conversion Rate",
+            value: dashboardMetrics.conversions.current,
+            growth: dashboardMetrics.conversions.growth,
+            icon: "./assets/icons/trending-up.svg",
+            min: 3,
+            max: 8,
+            color: "orange"
         })}
+
+        ${createChartWidget({
+            title: "Revenue Overview",
+            canvasId:
+                "revenueAreaChart"
+        })}
+
+        ${createChartWidget({
+            title: "Traffic Sources",
+            canvasId:
+                "trafficDonutChart"
+        })}
+
+        ${createChartWidget({
+            title: "User Growth",
+            canvasId:
+                "usersLineChart"
+        })}
+
+        ${createChartWidget({
+            title: "Top Pages",
+            canvasId:
+                "pagesBarChart"
+        })}
+
+        ${createChartWidget({
+            title:
+                "Performance Radar",
+            canvasId:
+                "performanceRadarChart"
+        })}
+
+        ${createHeatmapWidget()}
+
+        ${createTopPagesWidget()}
     `;
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
+
         initializeCharts();
-        applyCountUp();
-    }, 300);
+
+        initializeCountUp();
+
+        initializeWidgetAnimations();
+
+    });
 }
