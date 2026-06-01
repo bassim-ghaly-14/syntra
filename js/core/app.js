@@ -8,7 +8,6 @@ import { pushNotification } from "../services/notificationService.js";
 import { showErrorModal } from "../components/modal.js";
 import { initializeDropdowns } from "../components/dropdown.js";
 import { setTheme } from "./state.js";
-import { globalLifecycleManager } from "../utils/lifecycle.js";
 
 let appInitialized = false;
 let globalEventsRegistered = false;
@@ -25,58 +24,29 @@ function registerGlobalEvents() {
     if (globalEventsRegistered) return;
     globalEventsRegistered = true;
 
-    const handleError = (event) => {
-        console.error("Application error:", event.error || event.reason);
-        showErrorModal("An unexpected application error occurred. Please refresh the page if the issue persists.");
-    };
-
-    const handleUnhandledRejection = (event) => {
-        console.error("Unhandled promise rejection:", event.reason);
-        showErrorModal("A background process failed unexpectedly. Some features may be unavailable.");
-    };
-
-    globalLifecycleManager.addEventListener(window, "error", handleError);
-    globalLifecycleManager.addEventListener(window, "unhandledrejection", handleUnhandledRejection);
-
-    // Cleanup on page unload
-    globalLifecycleManager.addEventListener(window, "beforeunload", () => {
-        globalLifecycleManager.deactivate();
+    window.addEventListener("error", event => {
+        console.error(event.error);
+        showErrorModal("An unexpected application error occurred.");
     });
 
-    // Pause realtime engine when tab is hidden
-    globalLifecycleManager.addEventListener(document, "visibilitychange", () => {
-        if (document.hidden) {
-            const { stopRealtimeEngine } = require("../services/realtimeEngine.js");
-            stopRealtimeEngine();
-        } else {
-            const { startRealtimeEngine } = require("../services/realtimeEngine.js");
-            startRealtimeEngine();
-        }
+    window.addEventListener("unhandledrejection", event => {
+        console.error(event.reason);
+        showErrorModal("A background process failed unexpectedly.");
     });
 }
 
 function applySavedTheme() {
     const theme = localStorage.getItem("syntra-theme") || "dark";
-    
-    // Validate theme
-    const validThemes = ["dark", "light"];
-    const safeTheme = validThemes.includes(theme) ? theme : "dark";
-    
-    document.documentElement.setAttribute("data-theme", safeTheme);
-    setTheme(safeTheme);
+    document.documentElement.setAttribute("data-theme", theme);
+    setTheme(theme);
 }
 
 async function initializeSystems() {
-    try {
-        await renderSidebar();
-        await renderNavbar();
-        initializeDropdowns();
-        initializeCommandPalette();
-        startRealtimeEngine();
-    } catch (error) {
-        console.error("System initialization error:", error);
-        showErrorModal("Failed to initialize application systems. Some features may be unavailable.");
-    }
+    await renderSidebar();
+    await renderNavbar();
+    initializeDropdowns();
+    initializeCommandPalette();
+    startRealtimeEngine();
 }
 
 async function initializeApplication() {
@@ -87,8 +57,6 @@ async function initializeApplication() {
         validateRootElements();
         applySavedTheme();
         registerGlobalEvents();
-        globalLifecycleManager.activate();
-        
         await initializeSystems();
 
         const currentPage = window.location.hash.slice(1) || "dashboard";
@@ -99,8 +67,8 @@ async function initializeApplication() {
 
         pushNotification("SYNTRA initialized successfully", "success");
     } catch (error) {
-        console.error("Application initialization failed:", error);
-        showErrorModal(error?.message || "Application initialization failed. Please refresh the page.");
+        console.error(error);
+        showErrorModal(error?.message || "Application initialization failed.");
     }
 }
 

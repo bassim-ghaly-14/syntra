@@ -8,10 +8,7 @@ import {
     formatPercentage
 } from "../utils/formatter.js";
 
-import { globalLifecycleManager } from "../utils/lifecycle.js";
-
 let realtimeInterval = null;
-let isRunning = false;
 
 function generateMetricValue(
     min,
@@ -47,101 +44,80 @@ function formatMetricValue(
 }
 
 function updateMetricCards() {
-    if (!globalLifecycleManager.isAlive()) {
-        stopRealtimeEngine();
-        return;
-    }
+    const metrics =
+        document.querySelectorAll(
+            "[data-metric]"
+        );
 
-    try {
-        const metrics =
-            document.querySelectorAll(
-                "[data-metric]"
+    metrics.forEach(metric => {
+        const min =
+            Number(
+                metric.dataset.min
+            ) || 100;
+
+        const max =
+            Number(
+                metric.dataset.max
+            ) || 1000;
+
+        let value =
+            generateMetricValue(
+                min,
+                max
             );
 
-        metrics.forEach(metric => {
-            const min =
+        const title =
+            metric.querySelector(
+                ".metric-title"
+            )?.textContent?.trim() ||
+            "";
+
+        if (
+            title ===
+            "Conversion Rate"
+        ) {
+            value =
                 Number(
-                    metric.dataset.min
-                ) || 100;
-
-            const max =
-                Number(
-                    metric.dataset.max
-                ) || 1000;
-
-            let value =
-                generateMetricValue(
-                    min,
-                    max
+                    (
+                        Math.random() *
+                            (8 - 3) +
+                        3
+                    ).toFixed(2)
                 );
+        }
 
-            const title =
-                metric.querySelector(
-                    ".metric-title"
-                )?.textContent?.trim() ||
-                "";
+        const valueElement =
+            metric.querySelector(
+                ".metric-value"
+            );
 
-            if (
-                title ===
-                "Conversion Rate"
-            ) {
-                value =
-                    Number(
-                        (
-                            Math.random() *
-                                (8 - 3) +
-                            3
-                        ).toFixed(2)
-                    );
-            }
+        if (!valueElement) {
+            return;
+        }
 
-            const valueElement =
-                metric.querySelector(
-                    ".metric-value"
-                );
+        valueElement.dataset.counter =
+            value;
 
-            if (!valueElement) {
-                return;
-            }
-
-            valueElement.dataset.counter =
-                value;
-
-            valueElement.textContent =
-                formatMetricValue(
-                    title,
-                    value
-                );
-        });
-    } catch (error) {
-        console.error("Error updating metrics:", error);
-    }
+        valueElement.textContent =
+            formatMetricValue(
+                title,
+                value
+            );
+    });
 }
 
 export function startRealtimeEngine() {
-    if (isRunning) {
-        return;
-    }
+    stopRealtimeEngine();
 
-    if (!globalLifecycleManager.isAlive()) {
-        globalLifecycleManager.activate();
-    }
+    realtimeInterval =
+        setInterval(() => {
+            updateMetricCards();
+        }, 3000);
 
-    try {
-        isRunning = true;
-        realtimeInterval =
-            globalLifecycleManager.setInterval(() => {
-                updateMetricCards();
-            }, 3000);
-
-        pushNotification(
-            "Realtime engine started",
-            "success"
-        );
-    } catch (error) {
-        console.error("Failed to start realtime engine:", error);
-        isRunning = false;
-    }
+    pushNotification(
+        "Realtime engine started",
+        "success"
+    );
 }
 
 export function stopRealtimeEngine() {
@@ -149,15 +125,9 @@ export function stopRealtimeEngine() {
         return;
     }
 
-    try {
-        globalLifecycleManager.clearInterval(realtimeInterval);
-        realtimeInterval = null;
-        isRunning = false;
-    } catch (error) {
-        console.error("Error stopping realtime engine:", error);
-    }
-}
+    clearInterval(
+        realtimeInterval
+    );
 
-export function isRealtimeEngineRunning() {
-    return isRunning;
+    realtimeInterval = null;
 }

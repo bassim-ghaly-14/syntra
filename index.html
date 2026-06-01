@@ -7,10 +7,10 @@
 
     <link rel="stylesheet" href="./styles/main.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" id="chart-lib"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" id="gsap-lib"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" id="sortable-lib"></script>
-    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js" id="countup-lib"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
 
     <script type="module" src="./js/main.js"></script>
 </head>
@@ -18,56 +18,17 @@
 
     <div class="app-layout">
 
-        <aside id="sidebar" role="navigation" aria-label="Main navigation"></aside>
+        <aside id="sidebar"></aside>
 
-        <main class="dashboard-container" role="main">
+        <main class="dashboard-container">
 
-            <nav id="navbar" role="navigation" aria-label="Top navigation"></nav>
+            <nav id="navbar"></nav>
 
-            <section class="dashboard-grid" id="dashboard-grid" role="region" aria-label="Dashboard content"></section>
+            <section class="dashboard-grid" id="dashboard-grid"></section>
 
         </main>
 
     </div>
-
-    <script>
-        // CDN Library Initialization with Error Handling
-        window.CDNLibraries = {
-            Chart: null,
-            gsap: null,
-            Sortable: null,
-            CountUp: null
-        };
-
-        function initializeCDNLibraries() {
-            const libraries = [
-                { name: 'Chart', id: 'chart-lib', global: 'Chart' },
-                { name: 'gsap', id: 'gsap-lib', global: 'gsap' },
-                { name: 'Sortable', id: 'sortable-lib', global: 'Sortable' },
-                { name: 'CountUp', id: 'countup-lib', global: 'CountUp' }
-            ];
-
-            libraries.forEach(lib => {
-                const script = document.getElementById(lib.id);
-                const globalLib = typeof window[lib.global] !== 'undefined' ? window[lib.global] : null;
-                
-                window.CDNLibraries[lib.name] = globalLib;
-
-                if (!globalLib) {
-                    console.warn(`CDN Library ${lib.name} failed to load. Some features may be unavailable.`);
-                    script.classList.add('cdn-failed');
-                } else {
-                    script.classList.add('cdn-loaded');
-                }
-            });
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeCDNLibraries);
-        } else {
-            initializeCDNLibraries();
-        }
-    </script>
 
 </body>
 </html>

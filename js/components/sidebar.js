@@ -1,5 +1,3 @@
-import { globalLifecycleManager } from "../utils/lifecycle.js";
-
 const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: "layout-dashboard.svg" },
     { id: "analytics", label: "Analytics", icon: "chart-column.svg" },
@@ -24,7 +22,7 @@ async function loadSvgInline(filename) {
         const svg = svgDoc.documentElement;
         svg.setAttribute("width", "20");
         svg.setAttribute("height", "20");
-        svg.setAttribute("fill", "transparent");
+        svg.setAttribute("fill", "currentColor");
         svg.setAttribute("stroke", "currentColor");
         
         const svgHtml = svg.outerHTML;
@@ -32,7 +30,7 @@ async function loadSvgInline(filename) {
         return svgHtml;
     } catch (error) {
         console.error(`Failed to load SVG: ${filename}`, error);
-        const fallback = `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3" fill="transparent"/></svg>`;
+        const fallback = `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
         svgCache.set(filename, fallback);
         return fallback;
     }
@@ -40,7 +38,7 @@ async function loadSvgInline(filename) {
 
 function createNavigationItem(item, svgHtml) {
     return `
-        <a href="#${item.id}" class="sidebar-nav-item" data-nav="${item.id}" role="menuitem" tabindex="0">
+        <a href="#" class="sidebar-nav-item" data-nav="${item.id}">
             <span class="sidebar-nav-icon">${svgHtml}</span>
             <span class="sidebar-nav-label">${item.label}</span>
         </a>
@@ -49,9 +47,8 @@ function createNavigationItem(item, svgHtml) {
 
 function attachNavigationEvents() {
     const items = document.querySelectorAll(".sidebar-nav-item");
-    
     items.forEach(item => {
-        const handleClick = (event) => {
+        item.addEventListener("click", event => {
             event.preventDefault();
             document.querySelectorAll(".sidebar-nav-item").forEach(link => {
                 link.classList.remove("active");
@@ -61,54 +58,8 @@ function attachNavigationEvents() {
             if (window.innerWidth < 1024) {
                 closeMobileSidebar();
             }
-        };
-
-        const handleKeydown = (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                handleClick(event);
-            }
-        };
-
-        globalLifecycleManager.addEventListener(item, "click", handleClick);
-        globalLifecycleManager.addEventListener(item, "keydown", handleKeydown);
+        });
     });
-}
-
-let sidebarOpen = false;
-
-function openMobileSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-    const toggleBtn = document.getElementById("mobile-menu-toggle");
-
-    if (!sidebar) return;
-
-    sidebarOpen = true;
-    sidebar.classList.add("sidebar-open");
-    if (overlay) overlay.classList.add("overlay-active");
-    document.body.classList.add("no-scroll");
-    if (toggleBtn) {
-        toggleBtn.setAttribute("aria-expanded", "true");
-        toggleBtn.classList.add("menu-open");
-    }
-}
-
-function closeMobileSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-    const toggleBtn = document.getElementById("mobile-menu-toggle");
-
-    if (!sidebar) return;
-
-    sidebarOpen = false;
-    sidebar.classList.remove("sidebar-open");
-    if (overlay) overlay.classList.remove("overlay-active");
-    document.body.classList.remove("no-scroll");
-    if (toggleBtn) {
-        toggleBtn.setAttribute("aria-expanded", "false");
-        toggleBtn.classList.remove("menu-open");
-    }
 }
 
 function initializeMobileNav() {
@@ -120,32 +71,37 @@ function initializeMobileNav() {
         return;
     }
 
-    const handleToggleClick = (event) => {
-        event.preventDefault();
-        if (sidebarOpen) {
+    function openMobileSidebar() {
+        sidebar.classList.add("sidebar-open");
+        if (overlay) overlay.classList.add("overlay-active");
+        document.body.classList.add("no-scroll");
+        toggleBtn.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMobileSidebar() {
+        sidebar.classList.remove("sidebar-open");
+        if (overlay) overlay.classList.remove("overlay-active");
+        document.body.classList.remove("no-scroll");
+        toggleBtn.setAttribute("aria-expanded", "false");
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        if (sidebar.classList.contains("sidebar-open")) {
             closeMobileSidebar();
         } else {
             openMobileSidebar();
         }
-    };
+    });
 
-    const handleOverlayClick = () => {
-        closeMobileSidebar();
-    };
+    if (overlay) {
+        overlay.addEventListener("click", closeMobileSidebar);
+    }
 
-    const handleResize = () => {
+    window.addEventListener("resize", () => {
         if (window.innerWidth >= 1024) {
             closeMobileSidebar();
         }
-    };
-
-    globalLifecycleManager.addEventListener(toggleBtn, "click", handleToggleClick);
-    
-    if (overlay) {
-        globalLifecycleManager.addEventListener(overlay, "click", handleOverlayClick);
-    }
-
-    globalLifecycleManager.addEventListener(window, "resize", handleResize);
+    });
 }
 
 export async function renderSidebar() {
@@ -153,8 +109,6 @@ export async function renderSidebar() {
     if (!sidebar) return;
 
     sidebar.className = "sidebar";
-    sidebar.setAttribute("role", "navigation");
-    sidebar.setAttribute("aria-label", "Main navigation");
 
     const itemsHtml = await Promise.all(
         navigationItems.map(async item => {
@@ -167,7 +121,7 @@ export async function renderSidebar() {
         <div class="sidebar-header">
             <div class="sidebar-brand">
                 <div class="sidebar-brand-logo">
-                    <img src="assets/logo/logo.PNG" alt="SYNTRA Logo" width="32" height="32">
+                    <img src="assets/logo/logo.PNG" alt="Syntra Logo">
                 </div>
                 <div class="sidebar-brand-content">
                     <h2>SYNTRA</h2>
@@ -176,13 +130,13 @@ export async function renderSidebar() {
             </div>
         </div>
         <div class="sidebar-divider"></div>
-        <nav class="sidebar-navigation" role="menu">
+        <nav class="sidebar-navigation">
             ${itemsHtml.join("")}
         </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-user-avatar">
-                    <img src="./assets/images/avatars/avatar-1.png" alt="User Avatar" width="32" height="32">
+                    <img src="./assets/images/avatars/avatar-1.png" alt="User Avatar">
                 </div>
                 <div class="sidebar-user-info">
                     <strong>Admin User</strong>
@@ -190,7 +144,6 @@ export async function renderSidebar() {
                 </div>
             </div>
         </div>
-        <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
     `;
 
     const firstItem = sidebar.querySelector(".sidebar-nav-item");

@@ -6,9 +6,18 @@ import {
 } from "../components/toast.js";
 
 import { appState } from "../core/state.js";
-import { sanitizeHTML } from "../utils/sanitizer.js";
 
 const MAX_NOTIFICATIONS = 50;
+
+function sanitizeHtml(input) {
+    if (typeof input !== "string") {
+        return "";
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(input, "text/html");
+    return doc.body.textContent || "";
+}
 
 function updateNotificationBadge() {
     const badge =
@@ -29,13 +38,7 @@ export function pushNotification(
     message,
     type = "info"
 ) {
-    // Sanitize message to prevent XSS
-    const sanitizedMessage = sanitizeHTML(message);
-
-    if (!sanitizedMessage) {
-        console.warn("Empty notification message");
-        return null;
-    }
+    const sanitizedMessage = sanitizeHtml(message);
 
     const notification = {
         id: crypto.randomUUID(),
@@ -57,26 +60,22 @@ export function pushNotification(
 
     updateNotificationBadge();
 
-    try {
-        switch (type) {
-            case "success":
-                showSuccessToast(sanitizedMessage);
-                break;
+    switch (type) {
+        case "success":
+            showSuccessToast(sanitizedMessage);
+            break;
 
-            case "warning":
-                showWarningToast(sanitizedMessage);
-                break;
+        case "warning":
+            showWarningToast(sanitizedMessage);
+            break;
 
-            case "error":
-                showErrorToast(sanitizedMessage);
-                break;
+        case "error":
+            showErrorToast(sanitizedMessage);
+            break;
 
-            default:
-                showInfoToast(sanitizedMessage);
-                break;
-        }
-    } catch (error) {
-        console.error("Error displaying toast notification:", error);
+        default:
+            showInfoToast(sanitizedMessage);
+            break;
     }
 
     return notification;

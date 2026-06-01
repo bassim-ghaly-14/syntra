@@ -21,11 +21,11 @@ export function saveLayout() {
             JSON.stringify(layout)
         );
     } catch (error) {
-        console.error("Layout save error:", error);
+        console.error(error);
     }
 }
 
-export async function loadLayout() {
+export function loadLayout() {
     try {
         const savedLayout =
             localStorage.getItem(
@@ -36,14 +36,8 @@ export async function loadLayout() {
             return;
         }
 
-        let layout;
-        try {
-            layout = JSON.parse(savedLayout);
-        } catch (error) {
-            console.warn("Invalid layout data, clearing:", error);
-            localStorage.removeItem(STORAGE_KEY);
-            return;
-        }
+        const layout =
+            JSON.parse(savedLayout);
 
         if (
             !Array.isArray(layout)
@@ -60,9 +54,8 @@ export async function loadLayout() {
             return;
         }
 
-        // Use Promise-based approach instead of MutationObserver timeout
-        const attemptReorder = () => {
-            try {
+        const attemptReorder =
+            () => {
                 const widgets =
                     grid.querySelectorAll(
                         "[data-widget-id]"
@@ -92,19 +85,11 @@ export async function loadLayout() {
                 );
 
                 return true;
-            } catch (error) {
-                console.error("Layout reorder error:", error);
-                return false;
-            }
-        };
+            };
 
-        // Try immediate reorder first
-        if (attemptReorder()) {
-            return;
-        }
-
-        // If widgets not ready, wait for them with timeout
-        return new Promise((resolve) => {
+        if (
+            !attemptReorder()
+        ) {
             const observer =
                 new MutationObserver(
                     () => {
@@ -112,7 +97,6 @@ export async function loadLayout() {
                             attemptReorder()
                         ) {
                             observer.disconnect();
-                            resolve();
                         }
                     }
                 );
@@ -120,42 +104,28 @@ export async function loadLayout() {
             observer.observe(
                 grid,
                 {
-                    childList: true
+                    childList:
+                        true
                 }
             );
 
-            // Timeout with error handling
             setTimeout(
-                () => {
-                    observer.disconnect();
-                    const success = attemptReorder();
-                    if (!success) {
-                        console.warn("Layout restoration timeout - using default layout");
-                    }
-                    resolve();
-                },
+                () =>
+                    observer.disconnect(),
                 5000
             );
-        });
-    } catch (error) {
-        console.error("Layout load error:", error);
-
-        try {
-            localStorage.removeItem(
-                STORAGE_KEY
-            );
-        } catch (clearError) {
-            console.error("Failed to clear layout:", clearError);
         }
+    } catch (error) {
+        console.error(error);
+
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
     }
 }
 
 export function resetLayout() {
-    try {
-        localStorage.removeItem(
-            STORAGE_KEY
-        );
-    } catch (error) {
-        console.error("Layout reset error:", error);
-    }
+    localStorage.removeItem(
+        STORAGE_KEY
+    );
 }

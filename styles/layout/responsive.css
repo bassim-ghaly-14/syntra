@@ -80,6 +80,9 @@
     .navbar-left {
         flex-shrink: 0;
     }
+    .navbar-left, #notifications-btn{
+        display: none;
+    }
 
     .navbar-center {
         min-width: 0;
@@ -95,9 +98,9 @@
     }
 
     .navbar-search input::placeholder {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     .metric-value {

@@ -18,105 +18,137 @@ import {
     formatPercentage
 } from "../utils/formatter.js";
 
-import { globalLifecycleManager } from "../utils/lifecycle.js";
-import { createSafeElement } from "../utils/sanitizer.js";
-
 function initializeDashboardEvents() {
 
-    const handleWidgetAction = (event) => {
-        const action =
-            event.target.closest(
-                "[data-widget-action]"
-            );
+    document.addEventListener(
+        "click",
+        event => {
 
-        if (!action) {
-            return;
-        }
-
-        const type =
-            action.dataset.widgetAction;
-
-        switch (type) {
-
-            case "refresh":
-
-                pushNotification(
-                    "Dashboard refreshed successfully",
-                    "success"
+            const action =
+                event.target.closest(
+                    "[data-widget-action]"
                 );
 
-                createWidgets();
+            if (!action) {
+                return;
+            }
 
-                break;
+            const type =
+                action.dataset.widgetAction;
 
-            case "analytics":
+            switch (type) {
 
-                // Build analytics content safely
-                const analyticsContent = `
-                    Revenue Growth: ${formatPercentage(dashboardMetrics.revenue.growth)}
-                    Active Users: ${formatNumber(dashboardMetrics.activeUsers.current)}
-                    Conversion Rate: ${formatPercentage(dashboardMetrics.conversions.current)}
-                    Sessions: ${formatNumber(dashboardMetrics.sessions.current)}
-                `;
+                case "refresh":
 
-                openModal({
-                    title:
-                        "Analytics Summary",
+                    pushNotification(
+                        "Dashboard refreshed successfully",
+                        "success"
+                    );
 
-                    content: analyticsContent,
+                    createWidgets();
 
-                    confirmText:
-                        "Close"
-                });
+                    break;
 
-                break;
+                case "analytics":
 
-            case "export":
+                    openModal({
+                        title:
+                            "Analytics Summary",
 
-                openModal({
-                    title:
-                        "Export Dashboard",
+                        content: `
+                            <div class="dashboard-modal-content">
 
-                    content: `Export dashboard data as JSON using Command Palette.`,
+                                <div class="modal-stat">
+                                    <strong>
+                                        Revenue Growth
+                                    </strong>
 
-                    confirmText:
-                        "Understood"
-                });
+                                    <span>
+                                        ${formatPercentage(dashboardMetrics.revenue.growth)}
+                                    </span>
+                                </div>
 
-                break;
+                                <div class="modal-stat">
+                                    <strong>
+                                        Active Users
+                                    </strong>
+
+                                    <span>
+                                        ${formatNumber(dashboardMetrics.activeUsers.current)}
+                                    </span>
+                                </div>
+
+                                <div class="modal-stat">
+                                    <strong>
+                                        Conversion Rate
+                                    </strong>
+
+                                    <span>
+                                        ${formatPercentage(dashboardMetrics.conversions.current)}
+                                    </span>
+                                </div>
+
+                                <div class="modal-stat">
+                                    <strong>
+                                        Sessions
+                                    </strong>
+
+                                    <span>
+                                        ${formatNumber(dashboardMetrics.sessions.current)}
+                                    </span>
+                                </div>
+
+                            </div>
+                        `,
+
+                        confirmText:
+                            "Close"
+                    });
+
+                    break;
+
+                case "export":
+
+                    openModal({
+                        title:
+                            "Export Dashboard",
+
+                        content: `
+                            <p>
+                                Export dashboard data
+                                as JSON using
+                                Command Palette.
+                            </p>
+                        `,
+
+                        confirmText:
+                            "Understood"
+                    });
+
+                    break;
+            }
         }
-    };
-
-    globalLifecycleManager.addEventListener(
-        document,
-        "click",
-        handleWidgetAction
     );
 }
 
 function initializeGsapEffects() {
 
-    const gsap = window.CDNLibraries?.gsap;
-    
-    if (!gsap) {
-        console.warn("GSAP library not available, skipping animations");
+    if (
+        typeof gsap === "undefined"
+    ) {
         return;
     }
 
-    try {
-        gsap.from(
-            ".widget",
-            {
-                opacity: 0,
-                y: 30,
-                duration: 0.6,
-                stagger: 0.08,
-                ease: "power2.out"
-            }
-        );
-    } catch (error) {
-        console.error("GSAP animation error:", error);
-    }
+    gsap.from(
+        ".widget",
+        {
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "power2.out"
+        }
+    );
 }
 
 export function initializeDashboard() {

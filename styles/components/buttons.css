@@ -2,39 +2,3 @@
     border: none;
     cursor: pointer;
 }
-
-/* Focus styles for keyboard accessibility */
-button:focus,
-button:focus-visible,
-input:focus,
-input:focus-visible,
-a:focus,
-a:focus-visible {
-    outline: 2px solid var(--cyan);
-    outline-offset: 2px;
-}
-
-.navbar-action-btn:focus-visible,
-.navbar-icon-btn:focus-visible,
-.navbar-profile-btn:focus-visible,
-.syntra-modal-btn:focus-visible,
-.widget-action:focus-visible {
-    outline: 2px solid var(--cyan);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
-}
-
-/* High contrast focus indicators */
-button:focus-visible {
-    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
-}
-
-/* Keyboard navigation visible focus */
-button:focus-visible {
-    background-color: rgba(0, 240, 255, 0.05);
-}
-
-/* Disable focus outline for mouse users (will be added back by :focus-visible) */
-button:focus:not(:focus-visible) {
-    outline: none;
-}

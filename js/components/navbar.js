@@ -2,8 +2,6 @@ import { pushNotification } from "../services/notificationService.js";
 import { getNotifications } from "../services/notificationService.js";
 import { openModal } from "./modal.js";
 import { setTheme } from "../core/state.js";
-import { validateSearchInput, createSafeElement } from "../utils/sanitizer.js";
-import { globalLifecycleManager } from "../utils/lifecycle.js";
 
 async function loadSvgInline(filename, size = 20) {
     try {
@@ -25,7 +23,7 @@ async function loadSvgInline(filename, size = 20) {
 
         svg.setAttribute("width", size);
         svg.setAttribute("height", size);
-        svg.setAttribute("fill", "transparent");
+        svg.setAttribute("fill", "currentColor");
         svg.setAttribute("stroke", "currentColor");
 
         return svg.outerHTML;
@@ -43,7 +41,7 @@ async function loadSvgInline(filename, size = 20) {
                     cx="12"
                     cy="12"
                     r="3"
-                    fill="transparent"
+                    fill="currentColor"
                 />
             </svg>
         `;
@@ -74,7 +72,6 @@ async function createNavbarMarkup() {
                     class="navbar-action-btn"
                     id="command-palette-trigger"
                     type="button"
-                    aria-label="Open command palette"
                 >
                     <span class="navbar-action-icon">
                         ${commandIcon}
@@ -87,20 +84,6 @@ async function createNavbarMarkup() {
                     <kbd>
                         Ctrl + K
                     </kbd>
-                </button>
-                
-                <button
-                    class="navbar-action-btn mobile-menu-toggle"
-                    id="mobile-menu-toggle"
-                    type="button"
-                    aria-label="Toggle navigation menu"
-                    aria-expanded="false"
-                >
-                    <span class="hamburger-icon">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
                 </button>
             </div>
 
@@ -115,7 +98,6 @@ async function createNavbarMarkup() {
                         type="text"
                         placeholder="Search dashboards, widgets, reports..."
                         autocomplete="off"
-                        aria-label="Search"
                     >
                 </div>
             </div>
@@ -126,7 +108,7 @@ async function createNavbarMarkup() {
                     class="navbar-icon-btn"
                     id="theme-toggle-btn"
                     type="button"
-                    aria-label="Toggle theme"
+                    aria-label="Theme Toggle"
                 >
                     <span class="navbar-icon theme-icon-sun">
                         ${sunIcon}
@@ -150,7 +132,6 @@ async function createNavbarMarkup() {
                     <span
                         id="notification-badge"
                         class="notification-badge"
-                        aria-live="polite"
                     >
                         0
                     </span>
@@ -160,13 +141,10 @@ async function createNavbarMarkup() {
                     class="navbar-profile-btn"
                     id="profile-btn"
                     type="button"
-                    aria-label="User profile"
                 >
                     <img
                         src="./assets/images/avatars/avatar-1.png"
                         alt="Profile Avatar"
-                        width="32"
-                        height="32"
                     >
 
                     <div>
@@ -226,42 +204,43 @@ function initializeThemeSystem() {
 
     updateThemeIcon(savedTheme);
 
-    const handleThemeToggle = () => {
-        const currentTheme =
-            document.documentElement.getAttribute(
-                "data-theme"
-            ) || "dark";
+    button.addEventListener(
+        "click",
+        () => {
+            const currentTheme =
+                document.documentElement.getAttribute(
+                    "data-theme"
+                ) || "dark";
 
-        const nextTheme =
-            currentTheme === "dark"
-                ? "light"
-                : "dark";
+            const nextTheme =
+                currentTheme === "dark"
+                    ? "light"
+                    : "dark";
 
-        document.documentElement.setAttribute(
-            "data-theme",
-            nextTheme
-        );
+            document.documentElement.setAttribute(
+                "data-theme",
+                nextTheme
+            );
 
-        localStorage.setItem(
-            "syntra-theme",
-            nextTheme
-        );
+            localStorage.setItem(
+                "syntra-theme",
+                nextTheme
+            );
 
-        setTheme(nextTheme);
+            setTheme(nextTheme);
 
-        updateThemeIcon(
-            nextTheme
-        );
+            updateThemeIcon(
+                nextTheme
+            );
 
-        pushNotification(
-            `Theme changed to ${nextTheme}`,
-            "success"
-        );
+            pushNotification(
+                `Theme changed to ${nextTheme}`,
+                "success"
+            );
 
-        updateNotificationBadge();
-    };
-
-    globalLifecycleManager.addEventListener(button, "click", handleThemeToggle);
+            updateNotificationBadge();
+        }
+    );
 }
 
 function updateThemeIcon(theme) {
@@ -307,36 +286,46 @@ function initializeNotificationPanel() {
         return;
     }
 
-    const handleNotificationClick = () => {
-        const notifications =
-            getNotifications();
+    button.addEventListener(
+        "click",
+        () => {
+            const notifications =
+                getNotifications();
 
-        let content = "";
-        
-        if (notifications.length) {
-            const notificationItems = notifications
-                .slice()
-                .reverse()
-                .map(item => {
-                    // Escape notification message for safe display
-                    const escapedMessage = document.createElement('div');
-                    escapedMessage.textContent = item.message;
-                    return `<div class="notification-item">${escapedMessage.innerHTML}</div>`;
-                })
-                .join("");
-            content = `<div class="notification-list">${notificationItems}</div>`;
-        } else {
-            content = `<div class="notification-list"><div class="notification-item">No notifications available.</div></div>`;
+            const content =
+                notifications.length
+                    ? notifications
+                        .slice()
+                        .reverse()
+                        .map(
+                            item => `
+                                <div class="notification-item">
+                                    ${item.message}
+                                </div>
+                            `
+                        )
+                        .join("")
+                    : `
+                        <div class="notification-item">
+                            No notifications available.
+                        </div>
+                    `;
+
+            openModal({
+                title:
+                    "Notifications",
+
+                content: `
+                    <div class="notification-list">
+                        ${content}
+                    </div>
+                `,
+
+                confirmText:
+                    "Close"
+            });
         }
-
-        openModal({
-            title: "Notifications",
-            content: content,
-            confirmText: "Close"
-        });
-    };
-
-    globalLifecycleManager.addEventListener(button, "click", handleNotificationClick);
+    );
 }
 
 function initializeProfileButton() {
@@ -349,15 +338,29 @@ function initializeProfileButton() {
         return;
     }
 
-    const handleProfileClick = () => {
-        openModal({
-            title: "Profile",
-            content: `Admin User - Dashboard Administrator`,
-            confirmText: "Close"
-        });
-    };
+    button.addEventListener(
+        "click",
+        () => {
+            openModal({
+                title: "Profile",
 
-    globalLifecycleManager.addEventListener(button, "click", handleProfileClick);
+                content: `
+                    <div class="profile-modal">
+                        <h3>
+                            Admin User
+                        </h3>
+
+                        <p>
+                            Dashboard Administrator
+                        </p>
+                    </div>
+                `,
+
+                confirmText:
+                    "Close"
+            });
+        }
+    );
 }
 
 function initializeSearch() {
@@ -372,32 +375,44 @@ function initializeSearch() {
 
     let debounceTimer;
 
-    const handleSearchInput = (event) => {
-        clearTimeout(debounceTimer);
+    searchInput.addEventListener(
+        "input",
+        event => {
+            clearTimeout(
+                debounceTimer
+            );
 
-        debounceTimer = setTimeout(() => {
-            const value = validateSearchInput(event.target.value);
+            debounceTimer =
+                setTimeout(
+                    () => {
+                        const value =
+                            event.target.value
+                                .trim()
+                                .toLowerCase();
 
-            const widgets =
-                document.querySelectorAll(
-                    ".widget"
+                        const widgets =
+                            document.querySelectorAll(
+                                ".widget"
+                            );
+
+                        widgets.forEach(
+                            widget => {
+                                const text =
+                                    widget.textContent.toLowerCase();
+
+                                widget.style.display =
+                                    text.includes(
+                                        value
+                                    )
+                                        ? ""
+                                        : "none";
+                            }
+                        );
+                    },
+                    150
                 );
-
-            widgets.forEach(widget => {
-                const text =
-                    widget.textContent.toLowerCase();
-
-                widget.style.display =
-                    text.includes(
-                        value.toLowerCase()
-                    )
-                        ? ""
-                        : "none";
-            });
-        }, 150);
-    };
-
-    globalLifecycleManager.addEventListener(searchInput, "input", handleSearchInput);
+        }
+    );
 }
 
 export async function renderNavbar() {
@@ -412,9 +427,6 @@ export async function renderNavbar() {
 
     navbar.className =
         "navbar";
-    
-    navbar.setAttribute("role", "navigation");
-    navbar.setAttribute("aria-label", "Top navigation");
 
     navbar.innerHTML =
         await createNavbarMarkup();
