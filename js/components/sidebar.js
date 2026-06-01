@@ -64,7 +64,7 @@ export async function renderSidebar() {
         <div class="sidebar-header">
             <div class="sidebar-brand">
                 <div class="sidebar-brand-logo">
-                    <img src="assets/logo/logo.png" alt="Syntra Logo">
+                    <img src="assets/logo/logo.PNG" alt="Syntra Logo">
                 </div>
                 <div class="sidebar-brand-content">
                     <h2>SYNTRA</h2>
