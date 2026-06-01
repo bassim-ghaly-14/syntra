@@ -1,37 +1,177 @@
 .widget {
     position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    min-height: 340px;
+    min-height: 200px;
+    outline: none;
+    transition: all 0.25s ease;
 }
-.widget-body {
-    height: 320px;
+
+.widget:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
 }
-.widget canvas {
-    width: 100% !important;
-    height: 100% !important;
+
+.widget-dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
 }
+
 .widget-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
+
 .widget-header h3 {
-    font-size: 15px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.widget-body {
+    height: 280px;
+    position: relative;
+}
+
+.widget-action {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--cyan);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.widget-action:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--cyan);
+}
+
+.widget-action:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+}
+
+/* Metric widget styles */
+.metric-widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: auto;
+    height: auto;
+}
+
+.metric-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 240, 255, 0.1);
+    border-radius: 8px;
+}
+
+.metric-cyan .metric-icon {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--cyan);
+}
+
+.metric-purple .metric-icon {
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--purple);
+}
+
+.metric-green .metric-icon {
+    background: rgba(0, 208, 132, 0.1);
+    color: var(--green);
+}
+
+.metric-orange .metric-icon {
+    background: rgba(255, 176, 32, 0.1);
+    color: var(--orange);
+}
+
+.metric-growth {
+    padding: 4px 8px;
+    background: rgba(0, 208, 132, 0.1);
+    border-radius: 4px;
+    color: var(--green);
+    font-size: 12px;
     font-weight: 700;
 }
-.widget-dragging {
-    opacity: 0.5;
-    transform: scale(0.98);
+
+.metric-growth.positive {
+    color: var(--green);
 }
-.widget-action {
-    border: none;
-    cursor: pointer;
-    border-radius: 12px;
-    padding: 8px 14px;
-    background:
-        rgba(0,240,255,.12);
-    color:
-        var(--cyan);
+
+.metric-growth.negative {
+    background: rgba(255, 92, 114, 0.1);
+    color: var(--red);
+}
+
+.metric-title {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Chart widget styles */
+.chart-widget {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Heatmap widget styles */
+.heatmap-widget {
+    height: auto;
+}
+
+#heatmap-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    transition: all 0.25s ease;
+}
+
+.heatmap-cell:hover {
+    border-color: var(--cyan);
+    transform: scale(1.1);
+}
+
+/* Accessibility improvements */
+.widget[aria-label] {
+    position: relative;
+}
+
+.widget:focus {
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+}
+
+/* Top pages widget styles */
+.top-pages-widget {
+    height: auto;
 }

@@ -18,137 +18,105 @@ import {
     formatPercentage
 } from "../utils/formatter.js";
 
+import { globalLifecycleManager } from "../utils/lifecycle.js";
+import { createSafeElement } from "../utils/sanitizer.js";
+
 function initializeDashboardEvents() {
 
-    document.addEventListener(
-        "click",
-        event => {
+    const handleWidgetAction = (event) => {
+        const action =
+            event.target.closest(
+                "[data-widget-action]"
+            );
 
-            const action =
-                event.target.closest(
-                    "[data-widget-action]"
+        if (!action) {
+            return;
+        }
+
+        const type =
+            action.dataset.widgetAction;
+
+        switch (type) {
+
+            case "refresh":
+
+                pushNotification(
+                    "Dashboard refreshed successfully",
+                    "success"
                 );
 
-            if (!action) {
-                return;
-            }
+                createWidgets();
 
-            const type =
-                action.dataset.widgetAction;
+                break;
 
-            switch (type) {
+            case "analytics":
 
-                case "refresh":
+                // Build analytics content safely
+                const analyticsContent = `
+                    Revenue Growth: ${formatPercentage(dashboardMetrics.revenue.growth)}
+                    Active Users: ${formatNumber(dashboardMetrics.activeUsers.current)}
+                    Conversion Rate: ${formatPercentage(dashboardMetrics.conversions.current)}
+                    Sessions: ${formatNumber(dashboardMetrics.sessions.current)}
+                `;
 
-                    pushNotification(
-                        "Dashboard refreshed successfully",
-                        "success"
-                    );
+                openModal({
+                    title:
+                        "Analytics Summary",
 
-                    createWidgets();
+                    content: analyticsContent,
 
-                    break;
+                    confirmText:
+                        "Close"
+                });
 
-                case "analytics":
+                break;
 
-                    openModal({
-                        title:
-                            "Analytics Summary",
+            case "export":
 
-                        content: `
-                            <div class="dashboard-modal-content">
+                openModal({
+                    title:
+                        "Export Dashboard",
 
-                                <div class="modal-stat">
-                                    <strong>
-                                        Revenue Growth
-                                    </strong>
+                    content: `Export dashboard data as JSON using Command Palette.`,
 
-                                    <span>
-                                        ${formatPercentage(dashboardMetrics.revenue.growth)}
-                                    </span>
-                                </div>
+                    confirmText:
+                        "Understood"
+                });
 
-                                <div class="modal-stat">
-                                    <strong>
-                                        Active Users
-                                    </strong>
-
-                                    <span>
-                                        ${formatNumber(dashboardMetrics.activeUsers.current)}
-                                    </span>
-                                </div>
-
-                                <div class="modal-stat">
-                                    <strong>
-                                        Conversion Rate
-                                    </strong>
-
-                                    <span>
-                                        ${formatPercentage(dashboardMetrics.conversions.current)}
-                                    </span>
-                                </div>
-
-                                <div class="modal-stat">
-                                    <strong>
-                                        Sessions
-                                    </strong>
-
-                                    <span>
-                                        ${formatNumber(dashboardMetrics.sessions.current)}
-                                    </span>
-                                </div>
-
-                            </div>
-                        `,
-
-                        confirmText:
-                            "Close"
-                    });
-
-                    break;
-
-                case "export":
-
-                    openModal({
-                        title:
-                            "Export Dashboard",
-
-                        content: `
-                            <p>
-                                Export dashboard data
-                                as JSON using
-                                Command Palette.
-                            </p>
-                        `,
-
-                        confirmText:
-                            "Understood"
-                    });
-
-                    break;
-            }
+                break;
         }
+    };
+
+    globalLifecycleManager.addEventListener(
+        document,
+        "click",
+        handleWidgetAction
     );
 }
 
 function initializeGsapEffects() {
 
-    if (
-        typeof gsap === "undefined"
-    ) {
+    const gsap = window.CDNLibraries?.gsap;
+    
+    if (!gsap) {
+        console.warn("GSAP library not available, skipping animations");
         return;
     }
 
-    gsap.from(
-        ".widget",
-        {
-            opacity: 0,
-            y: 30,
-            duration: 0.6,
-            stagger: 0.08,
-            ease: "power2.out"
-        }
-    );
+    try {
+        gsap.from(
+            ".widget",
+            {
+                opacity: 0,
+                y: 30,
+                duration: 0.6,
+                stagger: 0.08,
+                ease: "power2.out"
+            }
+        );
+    } catch (error) {
+        console.error("GSAP animation error:", error);
+    }
 }
 
 export function initializeDashboard() {
