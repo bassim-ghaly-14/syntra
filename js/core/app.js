@@ -25,6 +25,13 @@ import {
     showErrorModal
 } from "../components/modal.js";
 
+import {
+    initializeDropdowns
+} from "../components/dropdown.js";
+
+let appInitialized = false;
+let globalEventsRegistered = false;
+
 function validateRootElements() {
     const requiredElements = [
         "sidebar",
@@ -45,6 +52,12 @@ function validateRootElements() {
 }
 
 function registerGlobalEvents() {
+    if (globalEventsRegistered) {
+        return;
+    }
+
+    globalEventsRegistered = true;
+
     window.addEventListener(
         "error",
         event => {
@@ -89,12 +102,20 @@ async function initializeSystems() {
 
     loadLayout();
 
+    initializeDropdowns();
+
     initializeCommandPalette();
 
     startRealtimeEngine();
 }
 
 async function initializeApplication() {
+    if (appInitialized) {
+        return;
+    }
+
+    appInitialized = true;
+
     try {
         validateRootElements();
 
@@ -125,7 +146,8 @@ export function initializeApp() {
     ) {
         document.addEventListener(
             "DOMContentLoaded",
-            initializeApplication
+            initializeApplication,
+            { once: true }
         );
 
         return;
