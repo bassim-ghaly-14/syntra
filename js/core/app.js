@@ -29,6 +29,10 @@ import {
     initializeDropdowns
 } from "../components/dropdown.js";
 
+import {
+    setTheme
+} from "./state.js";
+
 let appInitialized = false;
 let globalEventsRegistered = false;
 
@@ -91,6 +95,8 @@ function applySavedTheme() {
         "data-theme",
         theme
     );
+
+    setTheme(theme);
 }
 
 async function initializeSystems() {

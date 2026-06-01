@@ -7,7 +7,13 @@ const navigationItems = [
     { id: "settings", label: "Settings", icon: "settings.svg" }
 ];
 
+const svgCache = new Map();
+
 async function loadSvgInline(filename) {
+    if (svgCache.has(filename)) {
+        return svgCache.get(filename);
+    }
+
     try {
         const response = await fetch(`./assets/icons/${filename}`);
         const svgText = await response.text();
@@ -18,10 +24,15 @@ async function loadSvgInline(filename) {
         svg.setAttribute("height", "20");
         svg.setAttribute("fill", "currentColor");
         svg.setAttribute("stroke", "currentColor");
-        return svg.outerHTML;
+        
+        const svgHtml = svg.outerHTML;
+        svgCache.set(filename, svgHtml);
+        return svgHtml;
     } catch (error) {
         console.error(`Failed to load SVG: ${filename}`, error);
-        return `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
+        const fallback = `<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
+        svgCache.set(filename, fallback);
+        return fallback;
     }
 }
 
@@ -43,7 +54,53 @@ function attachNavigationEvents() {
                 link.classList.remove("active");
             });
             item.classList.add("active");
+
+            if (window.innerWidth < 1024) {
+                closeMobileSidebar();
+            }
         });
+    });
+}
+
+function initializeMobileNav() {
+    const toggleBtn = document.getElementById("mobile-menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebar-overlay");
+
+    if (!toggleBtn || !sidebar) {
+        return;
+    }
+
+    function openMobileSidebar() {
+        sidebar.classList.add("sidebar-open");
+        if (overlay) overlay.classList.add("overlay-active");
+        document.body.classList.add("no-scroll");
+        toggleBtn.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMobileSidebar() {
+        sidebar.classList.remove("sidebar-open");
+        if (overlay) overlay.classList.remove("overlay-active");
+        document.body.classList.remove("no-scroll");
+        toggleBtn.setAttribute("aria-expanded", "false");
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        if (sidebar.classList.contains("sidebar-open")) {
+            closeMobileSidebar();
+        } else {
+            openMobileSidebar();
+        }
+    });
+
+    if (overlay) {
+        overlay.addEventListener("click", closeMobileSidebar);
+    }
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) {
+            closeMobileSidebar();
+        }
     });
 }
 
@@ -93,4 +150,5 @@ export async function renderSidebar() {
     if (firstItem) firstItem.classList.add("active");
 
     attachNavigationEvents();
+    initializeMobileNav();
 }

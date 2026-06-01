@@ -10,11 +10,26 @@
     --green: #00d084;
     --orange: #ffb020;
     --red: #ff5c72;
-    --border:
-        rgba(255,255,255,0.08);
-    --glass:
-        rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --glass: rgba(255,255,255,0.04);
 }
+
+[data-theme="light"] {
+    --bg-primary: #f5f7ff;
+    --bg-secondary: #ffffff;
+    --card: #ffffff;
+    --bg-card: rgba(255,255,255,0.85);
+    --cyan: #00b8cc;
+    --purple: #5a52d4;
+    --text: #1a1f36;
+    --muted: #6b7280;
+    --green: #00a86b;
+    --orange: #e69500;
+    --red: #e03a50;
+    --border: rgba(0,0,0,0.08);
+    --glass: rgba(0,0,0,0.03);
+}
+
 body {
     background: url("../assets/images/backgrounds/dashboard-bg.svg");
     background-size: cover;
@@ -28,6 +43,7 @@ body {
     overflow-x: hidden;
     position: relative;
 }
+
 body::before {
     content: "";
     position: fixed;
@@ -44,23 +60,27 @@ body::before {
     pointer-events: none;
     z-index: -1;
 }
+
 /* ==========================================
    SCROLLBAR
 ========================================== */
 html {
     scroll-behavior: smooth;
 }
+
 ::-webkit-scrollbar {
     width: 10px;
 }
+
 ::-webkit-scrollbar-track {
     background: #090d1a;
 }
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #e5e7eb;
+}
+
 ::-webkit-scrollbar-thumb {
-    background:
-        linear-gradient(
-            var(--cyan),
-            var(--purple)
-        );
+    background: linear-gradient(var(--cyan), var(--purple));
     border-radius: 20px;
 }

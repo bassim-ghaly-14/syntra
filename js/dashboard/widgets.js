@@ -49,6 +49,25 @@ const widgetRegistry = {
     }
 };
 
+/**
+ * Chart instance registry to prevent memory leaks
+ */
+const chartRegistry = new Map();
+
+function destroyChart(canvasId) {
+    if (chartRegistry.has(canvasId)) {
+        const chart = chartRegistry.get(canvasId);
+        if (chart && typeof chart.destroy === "function") {
+            chart.destroy();
+        }
+        chartRegistry.delete(canvasId);
+    }
+}
+
+function registerChart(canvasId, chartInstance) {
+    chartRegistry.set(canvasId, chartInstance);
+}
+
 function createMetricCard({
     key,
     title,
@@ -189,41 +208,45 @@ function createTopPagesWidget() {
 }
 
 function initializeCharts() {
-    createAreaChart(
-        document.getElementById(
-            "revenueAreaChart"
-        )
-    );
+    const revenueCanvas = document.getElementById("revenueAreaChart");
+    if (revenueCanvas) {
+        destroyChart("revenueAreaChart");
+        const chart = createAreaChart(revenueCanvas);
+        if (chart) registerChart("revenueAreaChart", chart);
+    }
 
-    createLineChart(
-        document.getElementById(
-            "usersLineChart"
-        )
-    );
+    const usersCanvas = document.getElementById("usersLineChart");
+    if (usersCanvas) {
+        destroyChart("usersLineChart");
+        const chart = createLineChart(usersCanvas);
+        if (chart) registerChart("usersLineChart", chart);
+    }
 
-    createDonutChart(
-        document.getElementById(
-            "trafficDonutChart"
-        )
-    );
+    const trafficCanvas = document.getElementById("trafficDonutChart");
+    if (trafficCanvas) {
+        destroyChart("trafficDonutChart");
+        const chart = createDonutChart(trafficCanvas);
+        if (chart) registerChart("trafficDonutChart", chart);
+    }
 
-    createBarChart(
-        document.getElementById(
-            "pagesBarChart"
-        )
-    );
+    const pagesCanvas = document.getElementById("pagesBarChart");
+    if (pagesCanvas) {
+        destroyChart("pagesBarChart");
+        const chart = createBarChart(pagesCanvas);
+        if (chart) registerChart("pagesBarChart", chart);
+    }
 
-    createRadarChart(
-        document.getElementById(
-            "performanceRadarChart"
-        )
-    );
+    const performanceCanvas = document.getElementById("performanceRadarChart");
+    if (performanceCanvas) {
+        destroyChart("performanceRadarChart");
+        const chart = createRadarChart(performanceCanvas);
+        if (chart) registerChart("performanceRadarChart", chart);
+    }
 
-    createHeatmapChart(
-        document.getElementById(
-            "heatmapContainer"
-        )
-    );
+    const heatmapContainer = document.getElementById("heatmapContainer");
+    if (heatmapContainer) {
+        createHeatmapChart(heatmapContainer);
+    }
 }
 
 function initializeCountUp() {

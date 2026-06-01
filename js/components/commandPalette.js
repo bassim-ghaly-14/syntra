@@ -1,6 +1,7 @@
 import { openModal } from "./modal.js";
 import { pushNotification } from "../services/notificationService.js";
 import { exportJSON } from "../services/exportService.js";
+import { setTheme } from "../core/state.js";
 
 let paletteElement = null;
 
@@ -40,20 +41,10 @@ const commands = [
         id: "dark-theme",
         label: "Switch To Dark Theme",
         action() {
-            document.documentElement.setAttribute(
-                "data-theme",
-                "dark"
-            );
-
-            localStorage.setItem(
-                "syntra-theme",
-                "dark"
-            );
-
-            pushNotification(
-                "Dark theme enabled",
-                "success"
-            );
+            setTheme("dark");
+            document.documentElement.setAttribute("data-theme", "dark");
+            localStorage.setItem("syntra-theme", "dark");
+            pushNotification("Dark theme enabled", "success");
         }
     },
 
@@ -61,20 +52,10 @@ const commands = [
         id: "light-theme",
         label: "Switch To Light Theme",
         action() {
-            document.documentElement.setAttribute(
-                "data-theme",
-                "light"
-            );
-
-            localStorage.setItem(
-                "syntra-theme",
-                "light"
-            );
-
-            pushNotification(
-                "Light theme enabled",
-                "success"
-            );
+            setTheme("light");
+            document.documentElement.setAttribute("data-theme", "light");
+            localStorage.setItem("syntra-theme", "light");
+            pushNotification("Light theme enabled", "success");
         }
     },
 
@@ -103,6 +84,18 @@ const commands = [
         }
     }
 ];
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
 function createPalette() {
     const wrapper =
@@ -221,7 +214,7 @@ export function openCommandPalette() {
 
     searchInput.focus();
 
-    searchInput.oninput = event => {
+    const debouncedSearch = debounce(event => {
         const query =
             event.target.value
                 .trim()
@@ -238,7 +231,9 @@ export function openCommandPalette() {
         renderCommands(
             filtered
         );
-    };
+    }, 150);
+
+    searchInput.oninput = debouncedSearch;
 }
 
 export function closeCommandPalette() {

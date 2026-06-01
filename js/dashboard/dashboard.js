@@ -9,6 +9,15 @@ import {
     openModal
 } from "../components/modal.js";
 
+import {
+    dashboardMetrics
+} from "../data/metrics.js";
+
+import {
+    formatNumber,
+    formatPercentage
+} from "../utils/formatter.js";
+
 function initializeDashboardEvents() {
 
     document.addEventListener(
@@ -55,7 +64,7 @@ function initializeDashboardEvents() {
                                     </strong>
 
                                     <span>
-                                        +9.7%
+                                        ${formatPercentage(dashboardMetrics.revenue.growth)}
                                     </span>
                                 </div>
 
@@ -65,7 +74,7 @@ function initializeDashboardEvents() {
                                     </strong>
 
                                     <span>
-                                        18,432
+                                        ${formatNumber(dashboardMetrics.activeUsers.current)}
                                     </span>
                                 </div>
 
@@ -75,7 +84,7 @@ function initializeDashboardEvents() {
                                     </strong>
 
                                     <span>
-                                        4.82%
+                                        ${formatPercentage(dashboardMetrics.conversions.current)}
                                     </span>
                                 </div>
 
@@ -85,7 +94,7 @@ function initializeDashboardEvents() {
                                     </strong>
 
                                     <span>
-                                        128,420
+                                        ${formatNumber(dashboardMetrics.sessions.current)}
                                     </span>
                                 </div>
 

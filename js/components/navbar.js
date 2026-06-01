@@ -1,6 +1,7 @@
 import { pushNotification } from "../services/notificationService.js";
 import { getNotifications } from "../services/notificationService.js";
 import { openModal } from "./modal.js";
+import { setTheme } from "../core/state.js";
 
 async function loadSvgInline(filename, size = 20) {
     try {
@@ -199,6 +200,8 @@ function initializeThemeSystem() {
         savedTheme
     );
 
+    setTheme(savedTheme);
+
     updateThemeIcon(savedTheme);
 
     button.addEventListener(
@@ -223,6 +226,8 @@ function initializeThemeSystem() {
                 "syntra-theme",
                 nextTheme
             );
+
+            setTheme(nextTheme);
 
             updateThemeIcon(
                 nextTheme

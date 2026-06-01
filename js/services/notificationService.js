@@ -9,6 +9,16 @@ import { appState } from "../core/state.js";
 
 const MAX_NOTIFICATIONS = 50;
 
+function sanitizeHtml(input) {
+    if (typeof input !== "string") {
+        return "";
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(input, "text/html");
+    return doc.body.textContent || "";
+}
+
 function updateNotificationBadge() {
     const badge =
         document.getElementById(
@@ -28,9 +38,11 @@ export function pushNotification(
     message,
     type = "info"
 ) {
+    const sanitizedMessage = sanitizeHtml(message);
+
     const notification = {
         id: crypto.randomUUID(),
-        message,
+        message: sanitizedMessage,
         type,
         createdAt: Date.now()
     };
@@ -50,19 +62,19 @@ export function pushNotification(
 
     switch (type) {
         case "success":
-            showSuccessToast(message);
+            showSuccessToast(sanitizedMessage);
             break;
 
         case "warning":
-            showWarningToast(message);
+            showWarningToast(sanitizedMessage);
             break;
 
         case "error":
-            showErrorToast(message);
+            showErrorToast(sanitizedMessage);
             break;
 
         default:
-            showInfoToast(message);
+            showInfoToast(sanitizedMessage);
             break;
     }
 
