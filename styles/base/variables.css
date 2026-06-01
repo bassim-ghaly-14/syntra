@@ -16,7 +16,7 @@
         rgba(255,255,255,0.04);
 }
 body {
-    background: url("./styles/base/dashboard-bg.svg");
+    background: url("../assets/images/backgrounds/dashboard-bg.svg");
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -32,7 +32,7 @@ body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: url("./styles/base/noise.png");
+    background: url("../assets/images/textures/noise.png");
     background-size: cover;
     background-attachment: fixed;
     background-position: center;

@@ -34,32 +34,14 @@ function validateRootElements() {
 
     const missingElements =
         requiredElements.filter(id => {
-            return !document.getElementById(
-                id
-            );
+            return !document.getElementById(id);
         });
 
     if (missingElements.length) {
         throw new Error(
-            `Missing required elements: ${missingElements.join(
-                ", "
-            )}`
+            `Missing required elements: ${missingElements.join(", ")}`
         );
     }
-}
-
-function initializeSystems() {
-    renderSidebar();
-
-    renderNavbar();
-
-    initializeDashboard();
-
-    loadLayout();
-
-    initializeCommandPalette();
-
-    startRealtimeEngine();
 }
 
 function registerGlobalEvents() {
@@ -77,9 +59,7 @@ function registerGlobalEvents() {
     window.addEventListener(
         "unhandledrejection",
         event => {
-            console.error(
-                event.reason
-            );
+            console.error(event.reason);
 
             showErrorModal(
                 "A background process failed unexpectedly."
@@ -100,7 +80,21 @@ function applySavedTheme() {
     );
 }
 
-function initializeApplication() {
+async function initializeSystems() {
+    await renderSidebar();
+
+    await renderNavbar();
+
+    initializeDashboard();
+
+    loadLayout();
+
+    initializeCommandPalette();
+
+    startRealtimeEngine();
+}
+
+async function initializeApplication() {
     try {
         validateRootElements();
 
@@ -108,7 +102,7 @@ function initializeApplication() {
 
         registerGlobalEvents();
 
-        initializeSystems();
+        await initializeSystems();
 
         pushNotification(
             "SYNTRA initialized successfully",
@@ -118,7 +112,7 @@ function initializeApplication() {
         console.error(error);
 
         showErrorModal(
-            error.message ||
+            error?.message ||
                 "Application initialization failed."
         );
     }
