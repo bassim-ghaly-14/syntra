@@ -1,35 +1,37 @@
 .widget {
     position: relative;
     overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 340px;
 }
-
-.metric-card {
+.widget-body {
+    height: 320px;
+}
+.widget canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+.widget-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
-
-.metric-title {
-    font-size: 13px;
-    color: #95a2c6;
-    letter-spacing: 0.5px;
-}
-
-.metric-value {
-    font-size: 28px;
+.widget-header h3 {
+    font-size: 15px;
     font-weight: 700;
-    color: #f5f7ff;
-}
-
-.chart-header {
-    font-size: 14px;
-    color: #95a2c6;
-    margin-bottom: 10px;
 }
 .widget-dragging {
     opacity: 0.5;
     transform: scale(0.98);
 }
-.widget {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.widget-action {
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 8px 14px;
+    background:
+        rgba(0,240,255,.12);
+    color:
+        var(--cyan);
 }

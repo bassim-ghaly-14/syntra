@@ -1,7 +1,49 @@
+@media (max-width: 1100px) {
+    .sidebar {
+        width: 90px;
+    }
+    .sidebar-nav-label,
+    .sidebar-brand-content {
+        display: none;
+    }
+    .sidebar-user-info {
+        display: none;
+    }
+    .sidebar-user {
+        justify-content: center;
+        padding: 16px 0;
+    }
+}
 @media (max-width: 768px) {
-
     .sidebar {
         display: none;
     }
-
+    .dashboard-container {
+        padding: 18px;
+        width: -webkit-fill-available;
+    }
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .navbar-search input {
+        width: 100%;
+    }
+    .navbar-search input::placeholder{
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .metric-value {
+        font-size: 28px;
+    }
+    .widget-body {
+        height: 260px;
+    }
+    .navbar-profile-btn div {
+        display: none;
+    }
+    .navbar-profile-btn {
+        padding: 8px;
+    }
 }

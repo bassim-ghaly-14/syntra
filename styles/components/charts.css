@@ -1,9 +1,72 @@
-.chart-card,
-.widget {
+.chart-header {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+.chart-card{
     min-height: 340px;
 }
-
-.widget canvas {
-    width: 100% !important;
-    height: 300px !important;
+.metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.metric-widget {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.metric-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.metric-growth {
+    font-size: 13px;
+    font-weight: 700;
+    color:
+        var(--green);
+}
+.metric-title {
+    color:
+        var(--muted);
+    font-size: 13px;
+    letter-spacing: .5px;
+}
+.metric-value {
+    font-size: 34px;
+    font-weight: 800;
+    color:
+        var(--text);
+}
+.metric-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--cyan);
+}
+.metric-icon svg * {
+  stroke: currentColor;
+  fill: transparent;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.syntra-heatmap {
+    display: grid;
+    grid-template-columns:
+        repeat(7,1fr);
+    gap: 10px;
+}
+.heatmap-cell {
+    height: 42px;
+    border-radius: 10px;
+    background:
+        var(--cyan);
+    color: black;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

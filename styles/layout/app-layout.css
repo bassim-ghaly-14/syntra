@@ -1,9 +1,10 @@
 .app-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--bg-primary);
 }
 .dashboard-container {
     flex: 1;
     padding: 32px;
+    /* overflow-x: hidden; */
 }

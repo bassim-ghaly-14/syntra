@@ -1,32 +1,66 @@
 :root {
-    --bg: #060816;
+    --bg-primary: #060816;
+    --bg-secondary: #0f1428;
     --card: #101528;
-    --primary: #00f0ff;
-    --secondary: #6c63ff;
+    --bg-card: rgba(16,21,40,0.78);
+    --cyan: #00f0ff;
+    --purple: #6c63ff;
     --text: #f5f7ff;
     --muted: #95a2c6;
+    --green: #00d084;
+    --orange: #ffb020;
+    --red: #ff5c72;
+    --border:
+        rgba(255,255,255,0.08);
+    --glass:
+        rgba(255,255,255,0.04);
 }
 body {
-    background:
-        radial-gradient(circle at top left, #18213d, #060816);
-
-    color: var(--text);
-
-    font-family: Inter, sans-serif;
-}
-body {
-    background: url("../assets/images/backgrounds/dashboard-bg.svg"),
-                radial-gradient(circle at top left, #18213d, #060816);
+    background: url("./styles/base/dashboard-bg.svg");
     background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
     background-repeat: no-repeat;
+    background-color: var(--purple);
+    min-height: 100vh;
+    margin: 0;
     color: var(--text);
-    font-family: Inter, sans-serif;
+    overflow-x: hidden;
+    position: relative;
 }
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: url("../assets/images/textures/noise.png");
+    background: url("./styles/base/noise.png");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: linear-gradient(var(--cyan),var(--purple));
+    min-height: 100vh;
+    margin: 0;
     opacity: 0.05;
     pointer-events: none;
+    z-index: -1;
+}
+/* ==========================================
+   SCROLLBAR
+========================================== */
+html {
+    scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #090d1a;
+}
+::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(
+            var(--cyan),
+            var(--purple)
+        );
+    border-radius: 20px;
 }
